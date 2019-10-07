@@ -51,18 +51,20 @@ class RemoteStorage {
 
     constructor(url = required()) {
         this.url = url;
+        this.basicHeaders = new Headers({
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        });
     }
 
-    register(PushSubscription = required(), options = {}) {
+    register(PushSubscription = required(), options = {}, overrideHeaders = null) {
+        this.basicHeaders = overrideHeaders;
         return fetch(this.url, {
             method: 'POST',
             mode: 'cors',
             credentials: 'include',
             cache: 'default',
-            headers: new Headers({
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            }),
+            headers: this.basicHeaders,
             body: JSON.stringify({
                 subscription: PushSubscription,
                 options: options,
@@ -72,16 +74,14 @@ class RemoteStorage {
         });
     }
 
-    updateOptions(PushSubscription = required(), options = {}) {
+    updateOptions(PushSubscription = required(), options = {}, overrideHeaders = null) {
+        this.basicHeaders = overrideHeaders;
         return fetch(this.url, {
             method: 'PUT',
             mode: 'cors',
             credentials: 'include',
             cache: 'default',
-            headers: new Headers({
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            }),
+            headers: this.basicHeaders,
             body: JSON.stringify({
                 subscription: PushSubscription,
                 options: options,
@@ -91,16 +91,14 @@ class RemoteStorage {
         });
     }
 
-    unregister(PushSubscription = required()) {
+    unregister(PushSubscription = required(), overrideHeaders = null) {
+        this.basicHeaders = overrideHeaders;
         return fetch(this.url, {
             method: 'DELETE',
             mode: 'cors',
             credentials: 'include',
             cache: 'default',
-            headers: new Headers({
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            }),
+            headers: this.basicHeaders,
             body: JSON.stringify({
                 subscription: PushSubscription,
             })
@@ -109,16 +107,14 @@ class RemoteStorage {
         });
     }
 
-    ping(PushSubscription = required(), options = {}) {
+    ping(PushSubscription = required(), options = {}, overrideHeaders = null) {
+        this.basicHeaders = overrideHeaders;
         return fetch(this.url, {
             method: 'PING',
             mode: 'cors',
             credentials: 'include',
             cache: 'default',
-            headers: new Headers({
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            }),
+            headers: this.basicHeaders,
             body: JSON.stringify({
                 subscription: PushSubscription,
                 options: options,
