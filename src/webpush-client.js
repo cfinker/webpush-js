@@ -208,12 +208,12 @@ class WebPushClient {
      *
      * @returns {Promise<PushSubscription | never>}
      */
-    subscribe(options = {}, register = this.isUrlProvided()) {
+    subscribe(options = {}, overrideHeaders = null, register = this.isUrlProvided()) {
         this.ensureSupported();
         return this.registration.pushManager.subscribe({userVisibleOnly: true, applicationServerKey: this.applicationServerKey})
             .then(PushSubscription => {
                 this.subscription = PushSubscription;
-                return true === register && this.ensureUrlIsProvided() ? this.storage.register(PushSubscription, options) : new Promise(resolve => resolve(PushSubscription));
+                return true === register && this.ensureUrlIsProvided() ? this.storage.register(PushSubscription, options, overrideHeaders) : new Promise(resolve => resolve(PushSubscription));
             });
     }
 
@@ -223,14 +223,14 @@ class WebPushClient {
      * @param unregister
      * @returns {Promise<T | never>}
      */
-    unsubscribe(unregister = this.isUrlProvided()) {
+    unsubscribe(unregister = this.isUrlProvided(), overrideHeaders = null) {
         this.ensureSupported();
         return WebPushUtils.getSubscription(this.registration)
             .then(PushSubscription => {
                 PushSubscription.unsubscribe()
                     .then(() => {
                         this.subscription = null;
-                        return true === unregister && this.ensureUrlIsProvided() ? this.storage.unregister(PushSubscription) : new Promise(resolve => resolve(true));
+                        return true === unregister && this.ensureUrlIsProvided() ? this.storage.unregister(PushSubscription, overrideHeaders) : new Promise(resolve => resolve(true));
                     });
             });
     }
